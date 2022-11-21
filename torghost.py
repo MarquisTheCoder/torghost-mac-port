@@ -112,7 +112,6 @@ def start_torghost():
     if os.path.exists(Torrc) and TorrcCfgString in open(Torrc).read():
         print(t() + ' Torrc file already configured')
     else:
-
         with open(Torrc, 'w') as myfile:
             print(t() + ' Writing torcc file ')
             myfile.write(TorrcCfgString)
