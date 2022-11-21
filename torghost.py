@@ -92,13 +92,13 @@ signal.signal(signal.SIGINT, sigint_handler)
 
 TorrcCfgString = \
     """
-VirtualAddrNetwork 10.0.0.0/10
-AutomapHostsOnResolve 1
-TransPort 9040
-DNSPort 5353
-ControlPort 9051
-RunAsDaemon 1
-"""
+    VirtualAddrNetwork 10.0.0.0/10
+    AutomapHostsOnResolve 1
+    TransPort 9040
+    DNSPort 5353
+    ControlPort 9051
+    RunAsDaemon 1
+    """
 
 resolvString = 'nameserver 127.0.0.1'
 
@@ -112,9 +112,9 @@ def start_torghost():
     if os.path.exists(Torrc) and TorrcCfgString in open(Torrc).read():
         print(t() + ' Torrc file already configured')
     else:
-        with open(Torrc, 'w') as myfile:
+        with open(Torrc, 'w') as torghostrc_file:
             print(t() + ' Writing torcc file ')
-            myfile.write(TorrcCfgString)
+            torghostrc_file.write(TorrcCfgString)
             print(bcolors.GREEN + '[done]' + bcolors.ENDC)
     if resolvString in open(resolv).read():
         print(t() + ' DNS resolv.conf file already configured')

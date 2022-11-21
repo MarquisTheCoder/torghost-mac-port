@@ -16,7 +16,6 @@ else
 fi
 
 echo Moving torghost binary to the /usr/bin directory
-
 cd dist 
 sudo cp torghost /usr/local/bin
 if [ $? -eq 0 ]; then
@@ -24,3 +23,5 @@ if [ $? -eq 0 ]; then
 else
     echo [FAILURE] could not move torghost binary to the /usr/bin directory
 fi
+
+mkdir /etc/tor
