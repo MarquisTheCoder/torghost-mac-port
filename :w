@@ -130,7 +130,7 @@ def start_torghost():
     os.system('sudo fuser -k 9051/tcp > /dev/null 2>&1')
     print(bcolors.GREEN + '[done]' + bcolors.ENDC)
     print(t() + ' Starting new tor daemon '),
-    command_out('sudo tor -f /etc/tor/torghostrc > /dev/null'
+    os.system('sudo tor -f /etc/tor/torghostrc > /dev/null'
               )
     print(bcolors.GREEN + '[done]' + bcolors.ENDC)
     print(t() + ' setting up iptables rules'),
@@ -157,9 +157,10 @@ def start_torghost():
 	done
 	iptables -A OUTPUT -m owner --uid-owner $TOR_UID -j ACCEPT
 	iptables -A OUTPUT -j REJECT
-	""" #% subprocess.getoutput('id -ur debian-tor'
+	""" \
+        % subprocess.getoutput('id -ur debian-tor')
 
-    command_out(iptables_rules)
+    os.system(iptables_rules)
     print(bcolors.GREEN + '[done]' + bcolors.ENDC)
     grab_ip()
 
@@ -201,7 +202,10 @@ def switch_tor():
     with Controller.from_port(port=9051) as controller:
         controller.authenticate()
         controller.signal(Signal.NEWNYM)
+
     print(bcolors.GREEN + '[done]' + bcolors.ENDC)
+    print(t() + ' Fetching current IP...')
+    print(t() + ' CURRENT IP : ' + bcolors.GREEN + ip() + bcolors.ENDC)
     grab_ip()
 
 def check_update():
@@ -213,14 +217,14 @@ def check_update():
         print(t() + bcolors.GREEN + ' New update available!' + bcolors.ENDC)
         print(t() + ' Your current TorGhost version : ' + bcolors.GREEN + VERSION + bcolors.ENDC)
         print(t() + ' Latest TorGhost version available : ' + bcolors.GREEN + newversion + bcolors.ENDC)
-        yes = {'yes', 'y', 'ye', 'yeh', 'yuh', 'I think so...'}
+        yes = {'yes', 'y', 'ye', ''}
         no = {'no', 'n'}
 
         choice = input(
             bcolors.BOLD + "Would you like to download latest version and build from Git repo? [Y/n]" + bcolors.ENDC).lower()
         if choice in yes:
             os.system(
-                'cd /tmp && git clone https://github.com/MarquisTheCoder/torghost-mac-port')
+                'cd /tmp && git clone  https://github.com/SusmithKrishnan/torghost')
             os.system('cd /tmp/torghost && sudo ./build.sh')
         elif choice in no:
             print(t() + " Update aborted by user")
