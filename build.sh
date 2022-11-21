@@ -1,13 +1,13 @@
 echo "Torghost installer v3.0"
 echo "Installing brew prerequisites "
 
-brew install tor
-brew install pyinstaller
+#brew install tor
+#brew install pyinstaller
 
 echo "Installing dependencies"
 
-sudo pip3 install -r requirements.txt 
-pyinstaller torghost.py
+#sudo pip3 install -r requirements.txt 
+pyinstaller --onefile torghost.py --clean
 if [ $? -eq 0 ]; then
     echo [SUCCESS] generated torghost binary!
 else
