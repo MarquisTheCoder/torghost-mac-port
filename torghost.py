@@ -135,8 +135,10 @@ def start_torghost():
     print(bcolors.GREEN + '[done]' + bcolors.ENDC)
     print(t() + ' setting up iptables rules'),
 
-    iptables_rules = \
-        """
+
+    #need to translate iptables rule to mac PF packet filtering 
+    #TASK 1
+    iptables_rules = """
 	NON_TOR="192.168.1.0/24 192.168.0.0/24"
 	TOR_UID=%s
 	TRANS_PORT="9040"
@@ -162,6 +164,7 @@ def start_torghost():
     command_out(iptables_rules)
     print(bcolors.GREEN + '[done]' + bcolors.ENDC)
     grab_ip()
+
 
 def command_out(command):
     print(command)
