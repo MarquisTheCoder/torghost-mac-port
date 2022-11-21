@@ -161,9 +161,15 @@ def start_torghost():
 
     os.system(iptables_rules)
     print(bcolors.GREEN + '[done]' + bcolors.ENDC)
-    print(t() + ' Fetching current IP...')
-    print(t() + ' CURRENT IP : ' + bcolors.GREEN + ip() + bcolors.ENDC)
+    grab_ip()
 
+def command_out(command):
+    print(command)
+    os.system(command)
+
+def grab_ip():
+    print(t() + ' Fetching current IP... ')
+    print(t() + ' CURRENT IP : ' + bcolors.GREEN + ip() + bcolors.ENDC)
 
 def stop_torghost():
     print(bcolors.RED + t() + 'STOPPING torghost' + bcolors.ENDC)
@@ -180,15 +186,13 @@ def stop_torghost():
 	iptables -X
 	"""
     os.system(IpFlush)
-    os.system('sudo fuser -k 9051/tcp > /dev/null 2>&1')
+    command_out('sudo fuser -k 9051/tcp > /dev/null 2>&1')
     print(bcolors.GREEN + '[done]' + bcolors.ENDC)
-    print(t() + ' Restarting Network manager'),
-    os.system('service network-manager restart')
+    print(t() + ' Restarting network'),
+    command_out("sudo ifconfig en0 down")
+    command_out("sudo ifconfig en0 up")
     print(bcolors.GREEN + '[done]' + bcolors.ENDC)
-    print(t() + ' Fetching current IP...')
-    time.sleep(3)
-    print(t() + ' CURRENT IP : ' + bcolors.GREEN + ip() + bcolors.ENDC)
-
+    grab_ip()
 
 def switch_tor():
     print(t() + ' Please wait...')
@@ -197,10 +201,11 @@ def switch_tor():
     with Controller.from_port(port=9051) as controller:
         controller.authenticate()
         controller.signal(Signal.NEWNYM)
+
     print(bcolors.GREEN + '[done]' + bcolors.ENDC)
     print(t() + ' Fetching current IP...')
     print(t() + ' CURRENT IP : ' + bcolors.GREEN + ip() + bcolors.ENDC)
-
+    grab_ip()
 
 def check_update():
     print(t() + ' Checking for update...')
