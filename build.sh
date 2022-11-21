@@ -11,7 +11,7 @@ pyinstaller torghost.py
 if [ $? -eq 0 ]; then
     echo [SUCCESS] generated torghost binary!
 else
-    echo [ERROR] Build failed. Unable to torghost binary using pyinstaller
+    echo [ERROR] Build failed. Unable to create torghost binary using pyinstaller
     exit 1
 fi
 
