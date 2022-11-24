@@ -148,6 +148,7 @@ def start_torghost():
 
 	iptables -t nat -A OUTPUT -m owner --uid-owner $TOR_UID -j RETURN
 	iptables -t nat -A OUTPUT -p udp --dport 53 -j REDIRECT --to-ports 5353
+
 	for NET in $NON_TOR 127.0.0.0/9 127.128.0.0/10; do
 	 iptables -t nat -A OUTPUT -d $NET -j RETURN
 	done
@@ -159,7 +160,30 @@ def start_torghost():
 	done
 	iptables -A OUTPUT -m owner --uid-owner $TOR_UID -j ACCEPT
 	iptables -A OUTPUT -j REJECT
-	""" #% subprocess.getoutput('id -ur debian-tor'
+	""" 
+    
+    pf_table_rules = """
+int_if = "wlan0"
+non_tor = "{ 192.168.1.0/24 10.7.1.0/30 }"
+
+trans_port = "9040"
+
+scrub in
+
+rdr pass on { lo1 $int_if } inet proto tcp to !($int_if) -> 127.0.0.1 port $trans_port
+rdr pass on lo0 inet proto udp to port domain -> 127.0.0.1 port 1053
+
+pass out quick inet proto tcp to 0xfeedface.org port 22 keep state
+pass out quick inet proto udp to 0xfeedface.org port 1194 keep state
+
+block return out
+pass quick on { lo0 lo1 } keep state
+
+pass out quick inet proto tcp user _tor flags S/SA modulate state
+pass out quick route-to lo1 inet proto udp to port 1053 keep state
+pass out quick inet to $non_tor keep state
+pass out route-to lo1 inet proto tcp all flags S/SA modulate state
+    """
 
     command_out(iptables_rules)
     print(bcolors.GREEN + '[done]' + bcolors.ENDC)
